@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-
 class QuestionRequest(BaseModel):
     context: str
     answer: str
@@ -54,7 +53,6 @@ def get_question(sentence,answer,mdl,tknizer):
   Question = dec[0].replace("question:","")
   Question= Question.strip()
   return Question
-
 
 
 @app.get('/')
