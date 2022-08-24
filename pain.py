@@ -1,5 +1,8 @@
 import nltk
 from nltk.corpus import wordnet as wn
+from collections import OrderedDict
+from sense2vec import Sense2Vec
+s2v = Sense2Vec().from_disk
 
 # Distractors from Wordnet
 def get_distractors_wordnet(syn,word):
@@ -23,23 +26,27 @@ def get_distractors_wordnet(syn,word):
     return distractors
 
 
-original_word = "lion"
-synset_to_use = wn.synsets(original_word,'n')[0]
-distractors_calculated = get_distractors_wordnet(synset_to_use,original_word)
+# original_word = "lion"
+# synset_to_use = wn.synsets(original_word,'n')[0]
+# distractors_calculated = get_distractors_wordnet(synset_to_use,original_word)
 
-print ("original word: ",original_word.capitalize())
-print (distractors_calculated)
+# print ("original word: ",original_word.capitalize())
+# print (distractors_calculated)
 
-original_word = "bat"
-synset_to_use = wn.synsets(original_word,'n')[0]
-distractors_calculated = get_distractors_wordnet(synset_to_use,original_word)
+# original_word = "bat"
+# synset_to_use = wn.synsets(original_word,'n')[0]
+# distractors_calculated = get_distractors_wordnet(synset_to_use,original_word)
 
-print ("\noriginal word: ",original_word.capitalize())
-print (distractors_calculated)
+# print ("\noriginal word: ",original_word.capitalize())
+# print (distractors_calculated)
 
-original_word = "green"
-synset_to_use = wn.synsets(original_word,'n')[0]
-distractors_calculated = get_distractors_wordnet(synset_to_use,original_word)
+# original_word = "green"
+# synset_to_use = wn.synsets(original_word,'n')[0]
+# distractors_calculated = get_distractors_wordnet(synset_to_use,original_word)
 
-print ("\noriginal word: ",original_word.capitalize())
-print (distractors_calculated)
+# print ("\noriginal word: ",original_word.capitalize())
+# print (distractors_calculated)
+
+
+
+
