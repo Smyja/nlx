@@ -4,11 +4,15 @@ from transformers import AutoTokenizer
 from pathlib import Path
 import os
 from fastapi import FastAPI
-from pydantic import BaseModel
-from textblob import TextBlob
-
 import nltk
 from nltk.corpus import wordnet as wn
+from pydantic import BaseModel
+from textblob import TextBlob
+from collections import OrderedDict
+from sense2vec import Sense2Vec
+s2v = Sense2Vec().from_disk('/home/maro/s2v_old')
+
+
 
 app = FastAPI()
 
@@ -88,6 +92,27 @@ def get_distractors_wordnet(syn,word):
     return distractors
 
 
+def sense2vec_get_words(word,s2v):
+    output = []
+    print("word---",word)
+    word = word.lower()
+    word = word.replace(" ", "_")
+
+    sense = s2v.get_best_sense(word)
+    most_similar = s2v.most_similar(sense, n=20)
+
+    # print ("most_similar ",most_similar)
+
+    for each_word in most_similar:
+        append_word = each_word[0].split("|")[0].replace("_", " ").lower()
+        if append_word.lower() != word:
+            output.append(append_word.title())
+
+    out = list(OrderedDict.fromkeys(output))
+    return out
+
+
+
 @app.get('/')
 def index():
     return {'message':'hello world'}
@@ -98,16 +123,11 @@ def getquestion(question: QuestionRequest):
     context = question.context
     question_array, gfg = get_question(context,model,tokenizer)
     distractors = []
+    print(gfg)
     for word in gfg:
-        argo=wn.synsets(word)
-        for syn in argo:
-             #sublist of distractors for each answer
-            distractors_sublist = get_distractors_wordnet(syn,word) 
-            distractors.append(distractors_sublist)
+        distractors_sublist =  sense2vec_get_words(word,s2v)
+        print ("distractors_sublist ",distractors_sublist)
+        distractors.append(distractors_sublist)
 
     print (distractors)
     return QuestionResponse(question=question_array,answer=gfg,distractors_sublist=distractors)
-
-
-   
-    return QuestionResponse(question=question_array,answer=gfg,distractors_sublist = distractors)
